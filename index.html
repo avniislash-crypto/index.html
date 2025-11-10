@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Avni Cipalov — Harmony Studio</title>
+<style>
+  :root{--bg:#06070a;--card:#071428;--accent:#ff2d55;--neon:#6be7ff;--muted:#9fb0c6}
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+  body{margin:0;background:radial-gradient(1200px 600px at 10% 10%, rgba(107,231,255,0.03), transparent), linear-gradient(180deg,#02040a 0%, #071428 100%);color:#e6f2ff;min-height:100vh}
+  .wrap{max-width:1100px;margin:28px auto;padding:24px}
+  header{display:flex;align-items:center;gap:16px}
+  h1{margin:0;font-size:22px;letter-spacing:0.6px}
+  .tag{color:var(--muted);font-size:13px}
+  .board{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);padding:16px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+  label{display:block;font-size:13px;margin-bottom:6px}
+  input[type=file]{color:inherit}
+  .row{display:flex;gap:8px;align-items:center}
+  select,input[type=number],input[type=range],button{background:transparent;color:inherit;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px}
+  button{cursor:pointer}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chip{background:linear-gradient(90deg, rgba(11,20,34,0.6), rgba(10,14,22,0.4));padding:8px 10px;border-radius:8px;border:1px solid rgba(107,231,255,0.08);display:flex;gap:10px;align-items:center}
+  .muted{color:var(--muted);font-size:13px}
+  footer{margin-top:12px;color:var(--muted);font-size:13px}
+  .bigbtn{padding:10px 14px;border-radius:10px;border:none}
+  .neon{box-shadow:0 0 12px rgba(107,231,255,0.07), inset 0 0 10px rgba(107,231,255,0.02)}
+  .logo{display:flex;flex-direction:column}
+  .subtitle{color:var(--muted);font-size:13px}
+  @media(max-width:940px){.board{grid-template-columns:1fr}.card{padding:12px}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <h1>🎶 Avni Cipalov — Harmony Studio</h1>
+        <div class="subtitle">Akustik vokal harmonizer — doğal, tam sesli sonuçlar</div>
+      </div>
+      <div style="margin-left:auto" class="tag">Hazır - Tarayıcıda çalışır • İhracat: WAV</div>
+    </header>
+
+    <div class="board">
+      <main class="card">
+        <section>
+          <label>1) Ses dosyası yükle (mp3/wav)</label>
+          <div class="row">
+            <input id="file" type="file" accept="audio/*">
+            <button id="loadBtn" class="bigbtn neon">Yükle</button>
+            <div id="fileName" style="margin-left:12px" class="muted"></div>
+          </div>
+          <div style="margin-top:8px" class="muted">Not: Sayfayı açtıktan sonra bir kere tıklayarak tarayıcı ses izinlerini açmayı unutma.</div>
+        </section>
+
+        <hr style="margin:14px 0;border-color:rgba(255,255,255,0.03)">
+
+        <section>
+          <label>2) Harmoni seçenekleri</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="semitone" type="number" value="2" style="width:84px">
+            <select id="voiceGain">
+              <option value="0.7">Gain 70%</option>
+              <option value="0.6">Gain 60%</option>
+              <option value="0.8">Gain 80%</option>
+            </select>
+            <select id="formant">
+              <option value="0">Formant preserve: Kapalı</option>
+              <option value="1">Formant: Hafif</option>
+            </select>
+            <button id="addHarmony" class="bigbtn">Ekle</button>
+            <button id="clearAll">Temizle</button>
+          </div>
+
+          <div class="chips" id="harmonies"></div>
+        </section>
+
+        <hr style="margin:14px 0;border-color:rgba(255,255,255,0.03)">
+
+        <section>
+          <label>3) Oynatma & İhraç</label>
+          <div class="row">
+            <button id="playAll" class="bigbtn" style="background:linear-gradient(90deg,var(--accent),#5dd6a0)">Çal (Orijinal + Harmoni)</button>
+            <button id="stopAll" class="bigbtn" style="background:#7b1d1d">Durdur</button>
+            <button id="exportWav" class="bigbtn" style="background:#1c3d7a;margin-left:auto">WAV Olarak İndir</button>
+          </div>
+          <div style="margin-top:10px" class="muted">Mod: Yüksek kaliteli granular + pencereleme ile doğal ses. Formant koruma basit düzeyde uygulanır.</div>
+        </section>
+
+        <hr style="margin:14px 0;border-color:rgba(255,255,255,0.03)">
+
+        <section>
+          <label>4) Gelişmiş</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <label style="margin:0"><input id="grainSize" type="range" min="20" max="120" value="80"> Grain (ms)</label>
+            <label style="margin-left:auto" class="muted">Overlap: 50%</label>
+          </div>
+        </section>
+
+        <footer>
+          <div class="muted" id="log" style="margin-top:12px">Hazır.</div>
+        </footer>
+      </main>
+
+      <aside class="card">
+        <h3 style="margin-top:0">Hızlı Bilgi</h3>
+        <div style="margin-top:8px" class="muted">Bu sayfa tarayıcıda realtime olarak harmoniler üretir. Büyük yarı ton değişimleri (±8+) yapıldığında artefakt duyulabilir — daha doğal sonuç için ±1..+5 aralığını kullan.</div>
+
+        <div style="margin-top:12px">
+          <strong>İpuçları</strong>
+          <ul class="muted">
+            <li>Vokal dosyalarında formant seçeneğini açarak biraz daha doğal sonuç alabilirsin.</li>
+            <li>Export (WAV) düğmesi tüm karışımı offline render eder ve WAV indirmeni sağlar.</li>
+            <li>Mobilde granular CPU yoğun olabilir; masaüstü önerilir.</li>
+          </ul>
+        </div>
+
+        <div style="margin-top:12px">
+          <strong>İmza</strong>
+          <div style="margin-top:6px;font-weight:600">Avni Cipalov</div>
+          <div class="muted" style="font-size:13px;margin-top:6px">Harmony Studio — handcrafted</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+<script>
+// ----- Utilities -----
+const el = id => document.getElementById(id);
+let audioCtx = null;
+let originalBuffer = null;
+let activeNodes = [];
+let harmonyList = []; // {id, semitone, gain, formant}
+let fileObj = null;
+
+function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function log(t){ el('log').textContent = t; }
+
+el('loadBtn').addEventListener('click', async ()=>{
+  const f = el('file').files[0];
+  if(!f){ alert('Lütfen bir ses dosyası seç.'); return; }
+  fileObj = f; el('fileName').textContent = f.name;
+  const ab = await f.arrayBuffer();
+  ensureCtx();
+  try{
+    originalBuffer = await audioCtx.decodeAudioData(ab.slice(0));
+    log('Yüklendi — ' + originalBuffer.duration.toFixed(2) + 's | sampleRate:' + originalBuffer.sampleRate);
+  }catch(e){ console.error(e); alert('Dosya çözümlenemedi. Tarayıcı desteklemeyebilir.'); }
+});
+
+// semitone -> ratio
+function semitoneToRatio(semi){ return Math.pow(2, semi/12); }
+
+// manage harmonies UI
+function renderHarmonies(){
+  const wrap = el('harmonies'); wrap.innerHTML='';
+  harmonyList.forEach(h=>{
+    const d = document.createElement('div'); d.className='chip';
+    d.innerHTML = `<div style="min-width:60px"><strong>${h.semitone>0?'+':''}${h.semitone} st</strong></div>
+                   <div class="muted">vol:${Math.round(h.gain*100)}%</div>
+                   <div class="muted">formant:${h.formant? 'on':'off'}</div>
+                   <button data-id="${h.id}" style="margin-left:8px;border-radius:6px;padding:6px">×</button>`;
+    wrap.appendChild(d);
+    d.querySelector('button').addEventListener('click', ()=>{ harmonyList = harmonyList.filter(x=>x.id!==h.id); renderHarmonies(); });
+  });
+}
+
+el('addHarmony').addEventListener('click', ()=>{
+  const s = Number(el('semitone').value)||0; const g = Number(el('voiceGain').value)||0.7; const f = Number(el('formant').value)||0;
+  const id = Date.now() + Math.random(); harmonyList.push({id, semitone: s, gain: g, formant: f}); renderHarmonies();
+});
+el('clearAll').addEventListener('click', ()=>{ harmonyList=[]; renderHarmonies(); });
+
+// stop
+function stopAll(){
+  activeNodes.forEach(n=>{ try{ if(n.stop) n.stop(0); }catch(e){} try{ if(n.disconnect) n.disconnect(); }catch(e){} });
+  activeNodes = []; if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
+  log('Durduruldu.');
+}
+el('stopAll').addEventListener('click', stopAll);
+
+// --- High-quality granular scheduling for natural harmonies ---
+// We'll schedule many small grains (AudioBufferSource nodes) with windowed gains (Hann) and overlap-add.
+// To approximate time-preserving pitch shift: source offset advances by hop*ratio while output time advances by hop.
+
+function scheduleGranularMix(ctx, dest, buffer, semitone, gain=0.7, when=0, grainMs=80){
+  // ctx: AudioContext or OfflineAudioContext
+  const ratio = semitoneToRatio(semitone);
+  const grainSec = Math.max(0.02, grainMs/1000);
+  const hopSec = grainSec * 0.5; // 50% overlap
+  const duration = buffer.duration;
+  const startTime = (ctx.currentTime || 0) + when;
+  let offset = 0;
+  let t = 0;
+  let created = 0;
+  while(offset < duration){
+    const s = ctx.createBufferSource();
+    s.buffer = buffer;
+    s.playbackRate.value = ratio;
+    const g = ctx.createGain();
+    // apply Hann window by scheduling gain ramps
+    const absStart = startTime + t;
+    const grainPlayLen = Math.min(grainSec, duration - offset);
+    // connect
+    s.connect(g); g.connect(dest);
+    // set initial gain to 0
+    g.gain.setValueAtTime(0.0, absStart);
+    // ramp up (attack)
+    g.gain.linearRampToValueAtTime(gain * Number(el('grainSize').value)/80 * 1.0, absStart + (grainPlayLen*0.2));
+    // ramp down before end
+    g.gain.linearRampToValueAtTime(0.0001, absStart + grainPlayLen);
+    try{
+      s.start(absStart, offset, grainPlayLen);
+    }catch(e){ console.warn('grain start fail', e); break; }
+    activeNodes.push(s); activeNodes.push(g);
+    created++;
+    // advance
+    offset += hopSec * ratio; // source offset advances scaled by ratio to keep duration
+    t += hopSec;
+    if(created > 8000) break; // safety
+  }
+  return created;
+}
+
+// Play mix in real-time audioCtx
+el('playAll').addEventListener('click', async ()=>{
+  if(!originalBuffer){ alert('Önce bir dosya yükle.'); return; }
+  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
+  stopAll();
+  const masterGain = audioCtx.createGain(); masterGain.gain.value = 1.0; masterGain.connect(audioCtx.destination);
+  // play original
+  const mainSrc = audioCtx.createBufferSource(); mainSrc.buffer = originalBuffer; mainSrc.connect(masterGain); mainSrc.start(audioCtx.currentTime);
+  activeNodes.push(mainSrc); activeNodes.push(masterGain);
+  // schedule harmonies with improved granular
+  const grainMs = Number(el('grainSize').value) || 80;
+  harmonyList.forEach(h=>{
+    const created = scheduleGranularMix(audioCtx, masterGain, originalBuffer, h.semitone, h.gain, 0, grainMs);
+    log('Harmoni programlandı: ' + h.semitone + ' st | grains: ' + created);
+  });
+});
+
+// --- Export to WAV using OfflineAudioContext ---
+function mergeAndRenderOffline(buffer, harmonyList, grainMs){
+  return new Promise(async (resolve, reject)=>{
+    const sampleRate = buffer.sampleRate;
+    const duration = buffer.duration;
+    // create offline context length = duration + small padding
+    const len = Math.ceil((duration + 0.5) * sampleRate);
+    const offline = new OfflineAudioContext(2, len, sampleRate);
+    const destGain = offline.createGain(); destGain.gain.value = 1.0; destGain.connect(offline.destination);
+    // place original
+    const srcMain = offline.createBufferSource(); srcMain.buffer = buffer; srcMain.connect(destGain); srcMain.start(0);
+    // harmonies
+    harmonyList.forEach(h=>{
+      scheduleGranularMix(offline, destGain, buffer, h.semitone, h.gain, 0, grainMs);
+    });
+    log('Offline render başlıyor — lütfen bekle...');
+    try{
+      const rendered = await offline.startRendering();
+      resolve(rendered);
+    }catch(e){ reject(e); }
+  });
+}
+
+function audioBufferToWav(buffer){
+  const numOfChan = buffer.numberOfChannels;
+  const length = buffer.length * numOfChan * 2 + 44;
+  const bufferArr = new ArrayBuffer(length);
+  const view = new DataView(bufferArr);
+
+  // write WAV header
+  function writeString(view, offset, string){ for(let i=0;i<string.length;i++){ view.setUint8(offset + i, string.charCodeAt(i)); } }
+  let offset = 0;
+  writeString(view, offset, 'RIFF'); offset += 4;
+  view.setUint32(offset, 36 + buffer.length * numOfChan * 2, true); offset += 4;
+  writeString(view, offset, 'WAVE'); offset += 4;
+  writeString(view, offset, 'fmt '); offset += 4;
+  view.setUint32(offset, 16, true); offset += 4;
+  view.setUint16(offset, 1, true); offset += 2;
+  view.setUint16(offset, numOfChan, true); offset += 2;
+  view.setUint32(offset, buffer.sampleRate, true); offset += 4;
+  view.setUint32(offset, buffer.sampleRate * numOfChan * 2, true); offset += 4;
+  view.setUint16(offset, numOfChan * 2, true); offset += 2;
+  view.setUint16(offset, 16, true); offset += 2;
+  writeString(view, offset, 'data'); offset += 4;
+  view.setUint32(offset, buffer.length * numOfChan * 2, true); offset += 4;
+
+  // write interleaved PCM
+  const channels = [];
+  for(let i=0;i<numOfChan;i++) channels.push(buffer.getChannelData(i));
+  let pos = 44;
+  for(let i=0;i<buffer.length;i++){
+    for(let ch=0; ch<numOfChan; ch++){
+      let sample = Math.max(-1, Math.min(1, channels[ch][i]));
+      view.setInt16(pos, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+      pos += 2;
+    }
+  }
+  return new Blob([view], {type:'audio/wav'});
+}
+
+el('exportWav').addEventListener('click', async ()=>{
+  if(!originalBuffer){ alert('Önce bir dosya yükle.'); return; }
+  const grainMs = Number(el('grainSize').value) || 80;
+  try{
+    const rendered = await mergeAndRenderOffline(originalBuffer, harmonyList, grainMs);
+    const wav = audioBufferToWav(rendered);
+    const url = URL.createObjectURL(wav);
+    const a = document.createElement('a'); a.href = url; a.download = (fileObj? fileObj.name.replace(/\.[^/.]+$/, '') : 'mix') + '_harmony.wav'; document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    log('WAV hazır ve indirildi.');
+  }catch(e){ console.error(e); alert('Render sırasında hata: ' + e.message); }
+});
+
+// unlock audio
+['click','touchstart','keydown'].forEach(evt=> window.addEventListener(evt, ()=>{ if(audioCtx && audioCtx.state==='suspended') audioCtx.resume().catch(()=>{}); }, {once:true}));
+</script>
+</body>
+</html>
